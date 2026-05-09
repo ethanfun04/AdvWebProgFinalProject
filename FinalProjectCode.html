@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Designed by Ethan Fundark</title>
+        <meta charset="utf-8">
+        <style>
+            h1 { 
+                text-align: center;
+            }
+            h2 { 
+                text-align: right;
+            }
+
+            /* track is a block that is used to contain the cars during the race */
+            #track {
+                position: relative; /* Lets the cars move within the box */
+                margin: 20px 0; /* Makes sure the track isn't bordering the 
+                                corner of the web page */
+                height: 550px; /* The height of the track */
+                background-image: url('track.jpg'); /* Stetches the background 
+                                                            to the user's length input */
+                background-size: 100% 100%; /* Ensures the image is stretched to
+                                            the track length */
+            }
+
+            img {
+                position: absolute; /* Lets the cars move within the box */
+                width: 100px;
+                height: auto;
+                left: 20px; /* 20px is the starting line for all cars */
+            }
+
+            /* finishline takes place after the user's chosen track length
+                to make it appear as if the cars cross the line */
+            #finishline {
+                position: absolute;
+                width: 100px;
+                top: 0px;
+                height: 100%;
+            }
+
+        </style>
+    </head>
+    <body>
+
+        <h1>Racecar Race</h1>
+        <h2>Designed by Ethan Fundark</h2>
+
+        <p>Instructions: Choose the length of the racing track, and the maximum/minimum speed. 
+        Hit race and watch the cars race! Hit reset to change variables and race the cars again!
+        The first car to reach the finish line wins!</p>
+
+        <!-- Collects starting length and min/max speed from user, default values are displayed -->
+        <p>Track Length (px): <input type="text" id="trackInput" value="800">   
+            Min Speed: <input type="number" id="minSpeed" value="2">   
+            Max Speed: <input type="number" id="maxSpeed" value="12">
+            <br><br>
+        <!-- Race start button and Reset button -->    
+            <input type="button" value="Race!" onclick="moveCar()">
+            <input type="button" value="Reset" onclick="resetRace()">
+        </p>
+
+        <!-- Creates a box that the images race within (the racetrack), and the finish line -->
+        <div id="track" style="width: 800px;">
+            <img src="redcar.jpg" alt="redcar" id="redcar" style="top: 40px;">
+            <img src="bluecar.jpg" alt="bluecar" id="bluecar" style="top: 170px;">
+            <img src="greencar.jpg" alt="greencar" id="greencar" style="top: 300px;">
+            <img src="orangecar.jpg" alt="orangecar" id="orangecar" style="top: 430px;">
+            <img src="finishline.jpg" id="finishline" style="left: 800px;">
+        </div>
+
+        <script>
+            // Groups the cars together to make it easier to code
+            let carIDs = ['#redcar', '#bluecar', '#greencar', '#orangecar'];
+            let carLefts = [20, 20, 20, 20];
+            let finishLine = 800;
+            let raceInterval;
+
+            // Function that moves the cars 
+            function go() {
+                // Grabs the user's max and min speed inputs
+                let min = parseInt(document.getElementById('minSpeed').value);
+                let max = parseInt(document.getElementById('maxSpeed').value);
+
+                // Gets the position of the finish line
+                let finish = document.getElementById('finishline');
+                let finishLeft = parseInt(finish.style.left);
+
+                // Loop for car movement
+                for (let i = 0; i < carIDs.length; i++) {
+
+                    //Generates a speed between the max and min
+                    let currentSpeed = Math.floor(Math.random() * (max - min + 1)) + min;
+                    carLefts[i] += currentSpeed;
+
+                    // Updates position visibly
+                    let car = document.querySelector(carIDs[i]);
+                    car.style.left = carLefts[i] + 'px';
+
+                    // If a car reaches the finish line the race finishes and states the winner
+                    if (carLefts[i] + 100 >= finishLeft) {
+                        clearInterval(raceInterval);
+
+                        if (carIDs[i] === '#redcar') {
+                            alert("The red car wins!");
+                        }
+                        if (carIDs[i] === '#bluecar') {
+                            alert("The blue car wins!");
+                        }
+                        if (carIDs[i] === '#greencar') {
+                            alert("The green car wins!");
+                        }
+                        if (carIDs[i] === '#orangecar') {
+                            alert("The orange car wins!");
+                        }
+
+                        // Exists the car momvement loop
+                        break;
+                    }
+                }
+            }
+
+            // Starts the race
+            function moveCar() {
+                // Gets the track length from the user and updates the track visibly
+                let trackInfo = document.getElementById('trackInput').value;
+                finishLine = parseInt(trackInfo);
+                document.getElementById('track').style.width = finishLine + "px";
+
+                // Moves the finish line to the end based off user input
+                document.getElementById('finishline').style.left = finishLine + "px";
+
+                // Stops any current place is one is ongoing 
+                clearInterval(raceInterval);
+
+                // Runs the go function on an interval
+                raceInterval = setInterval(go, 100);
+            }
+
+            // Resets thr race so a new one can start
+            function resetRace() {
+
+                // Stops any currant race
+                clearInterval(raceInterval);
+            
+                // Resets all car positions to the 20px starting line
+                for (let i = 0; i < carIDs.length; i++) {
+                    carLefts[i] = 20;
+                    document.querySelector(carIDs[i]).style.left = '20px';
+                }
+            }
+        </script>
+        <!-- Created by Ethan Fundark 
+            Last modified on 4/29/2026 @ 8:11 -->
+    </body>
+</html>
